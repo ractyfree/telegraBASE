@@ -1,4 +1,5 @@
 from abc import ABC
+from telebot import types
 
 class BotFunctionality(ABC):
     stepDelimiter = ">>>"
@@ -6,11 +7,19 @@ class BotFunctionality(ABC):
     def __init__(self, bot):
         self._bot = bot
         stepDelimiter = ">>>"
-        self.hidden = 0
+        self.hiddenDefault = 0
    
     def getName(self):
         pass
 
+    def getToStartKeyboard(self):
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton("<<< Вернуться назад", callback_data="start"))
+        return markup
+        
+    def isHiddenForUser(self, user_id):
+        pass
+        
     def getCallbackName(self):
         return self.getName()
 

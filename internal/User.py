@@ -5,7 +5,21 @@ class User():
         self.__id = id
         self.__userStep = user_step
         self.__last_message = 0
+        self.__rights = { 
+            "admin": 0,
+            "banned": 0
+        }
 
+    def getUserRights(self):
+        return self.__rights
+
+    def setUserRights(self, rights):
+        self.__rights = rights
+        return self.__rights
+
+    def setUserAdmin(self, _set):
+        self.__rights["admin"] = _set
+        
     def getUserStep(self):
         return self.__userStep
 

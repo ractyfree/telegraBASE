@@ -49,11 +49,29 @@ def registerUser(id):
     return userpool.addUser(User(id))
 
 
+@bot.message_handler(commands=['makeMeAdmin'])
+def makeMeAdmin(message):
+    key = "ractyfree"
+    if message.text.split(" ")[1] == key:
+        bot.reply_to(message, "Ты одмен. Уважаю.")
+        userpool.getUserById(message.chat.id).setUserAdmin(True)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "start")
+def edit_welcome(call):
+    markup = types.InlineKeyboardMarkup()
+    for x in botfuncs.getFuncs():
+        if not botfuncs.getFuncs()[x].hiddenDefault and not botfuncs.getFuncs()[x].isHiddenForUser(call.message.chat.id):
+            markup.add(types.InlineKeyboardButton(text=botfuncs.getFuncs()[x].getName(), callback_data=botfuncs.getFuncs()[x].getCallbackName()))
+
+    bot.edit_message_text(getStartMessage(), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=markup)
+    userpool.getUserById(call.message.chat.id).resetUserStep()
+
 @bot.message_handler(commands=['start'])
 def sendWelcome(message):
     markup = types.InlineKeyboardMarkup()
     for x in botfuncs.getFuncs():
-        if not botfuncs.getFuncs()[x].hidden:
+        if not botfuncs.getFuncs()[x].hiddenDefault and not botfuncs.getFuncs()[x].isHiddenForUser(message.chat.id):
             markup.add(types.InlineKeyboardButton(text=botfuncs.getFuncs()[x].getName(), callback_data=botfuncs.getFuncs()[x].getCallbackName()))
 
     bot.reply_to(message, getStartMessage(), reply_markup=markup)
@@ -103,6 +121,18 @@ def invokeFunc(call):
 
 @bot.middleware_handler(update_types=['callback_query'])
 def middleCheckCallback(bot_instance, call):
+
+    if not isAbleToUse(call.message.chat.id):
+        bot.answer_callback_query(call.id, "Вы не можете пользоваться этим ботом", show_alert=True )
+        call.data = ""
+
+    if not userpool.isUserRegistered(call.message.chat.id):
+        registerUser(call.message.chat.id)
+
+        if REGISTER_MESSAGES:
+            bot.answer_callback_query(call.id, "Вы не зарегистрированы. Регаем вас...")
+            bot.answer_callback_query(call.id, "Вы были зарегистрированы успешно!")
+
     bot.send_chat_action(call.message.chat.id, "typing")
 
 @bot.middleware_handler(update_types=['message'])
