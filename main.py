@@ -49,14 +49,7 @@ def registerUser(id):
     return userpool.addUser(User(id))
 
 
-@bot.message_handler(commands=['makeMeAdmin'])
-def makeMeAdmin(message):
-    key = "ractyfree"
-    if message.text.split(" ")[1] == key:
-        bot.reply_to(message, "Ты одмен. Уважаю.")
-        userpool.getUserById(message.chat.id).setUserAdmin(True)
-
-
+#INTERNAL HANDLERS
 @bot.callback_query_handler(func=lambda call: call.data == "start")
 def edit_welcome(call):
     markup = types.InlineKeyboardMarkup()
@@ -77,48 +70,43 @@ def sendWelcome(message):
     bot.reply_to(message, getStartMessage(), reply_markup=markup)
     userpool.getUserById(message.chat.id).resetUserStep()
 
+@bot.message_handler(commands=['makeMeAdmin'])
+def makeMeAdmin(message):
+    key = "ractyfree"
+    if message.text.split(" ")[1] == key:
+        bot.reply_to(message, "Ты одмен. Уважаю.")
+        userpool.getUserById(message.chat.id).setUserAdmin(True)
 
-@bot.message_handler(func=lambda message: BotFunctionality.isStepHasData(botfuncs.getFuncs(), userpool.getUserById(message.chat.id)))
+#MESSAGES HANDLERS
+@bot.message_handler(func=lambda message: BotFunctionality.isStepHasData(botfuncs.getFuncs(), userpool.getUserById(message.chat.id)) or message.text in botfuncs.getFuncs())
 def handlerForFuncs(message):
-
-    func = BotFunctionality.getFuncData(botfuncs, userpool.getUserById(message.chat.id))
     try:
-        func.startNext(message=message)
+        fun = botfuncs.getFuncs()[message.text]
+    except:
+        func = BotFunctionality.getFuncData(botfuncs, userpool.getUserById(message.chat.id))
+    try:
+        func.start(message.chat.id, "message", message)
     except Exception as e:
-        bot.send_message(message.chat.id, "Ошибка во время выполнения функции возникла: {0}\nUser_Step: {1}".format(str(e), userpool.getUserById(call.message.chat.id).getUserStep()))
+        bot.send_message(message.chat.id, "Ошибка во время выполнения callback функции возникла: {0}\nUser_Step: {1}".format(str(e), userpool.getUserById(message.chat.id).getUserStep()))
         pass
 
 
-@bot.message_handler(func=lambda message: message.text in botfuncs.getFuncs(), content_types=['text'])
-def invokeFunc(message):
+# CALLBACKS HANDLERS
+@bot.callback_query_handler(func=lambda call: BotFunctionality.isStepHasData(botfuncs.getFuncs(), userpool.getUserById(call.message.chat.id)) or call.data in botfuncs.getFuncs())
+def callBackHandler(call):
+    try:
+        func = botfuncs.getFuncs()[call.data]
+    except:
+        func = BotFunctionality.getFuncData(botfuncs, userpool.getUserById(call.message.chat.id))
     
-    funClass = botfuncs.getFuncs()[message.text]
     try:
-        funClass.start(message=message)
+        func.start(call.message.chat.id, "call", call)
     except Exception as e:
-        bot.send_message(message.chat.id, "Ошибка во время выполнения функции возникла: {0}\nUser_Step: {1}".format(str(e), userpool.getUserById(call.message.chat.id).getUserStep()))
+        bot.send_message(call.message.chat.id, "Ошибка во время выполнения callback функции возникла: \n{0}\nUser_Step: {1}".format(str(e), userpool.getUserById(call.message.chat.id).getUserStep()))
         pass
 
 
-# GetSpamText.somestuff
-@bot.callback_query_handler(func=lambda call: BotFunctionality.isStepHasData(botfuncs.getFuncs(), userpool.getUserById(call.message.chat.id)))
-def handlerForFuncs(call):
-    func = BotFunctionality.getFuncData(botfuncs, userpool.getUserById(call.message.chat.id))
-    try:
-        func.startNext(call=call)
-    except Exception as e:
-        bot.send_message(call.message.chat.id, "Ошибка во время выполнения функции возникла: {0}\nUser_Step: {1}".format(str(e), userpool.getUserById(call.message.chat.id).getUserStep()))
-        pass
-
-@bot.callback_query_handler(func=lambda call: call.data in botfuncs.getFuncs())
-def invokeFunc(call):
-    funClass = botfuncs.getFuncs()[call.data]
-    try:
-        funClass.start(call=call)
-    except Exception as e:
-        bot.send_message(call.message.chat.id, "Ошибка во время выполнения функции возникла: {0}\nUser_Step: {1}".format(str(e), userpool.getUserById(call.message.chat.id).getUserStep()))
-        pass
-
+#MIDDLEWARES
 @bot.middleware_handler(update_types=['callback_query'])
 def middleCheckCallback(bot_instance, call):
 

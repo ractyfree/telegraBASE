@@ -17,6 +17,12 @@ class BotFunctionality(ABC):
         markup.add(types.InlineKeyboardButton("<<< Вернуться назад", callback_data="start"))
         return markup
         
+    def getDataStep(self, User):
+        try:
+            return User.getUserStep().split(self.stepDelimiter)[1]
+        except:
+            pass 
+        
     def isHiddenForUser(self, user_id):
         pass
         
@@ -46,5 +52,5 @@ class BotFunctionality(ABC):
         """
         return funcs.getFuncs()[User.getUserStep().split(BotFunctionality.stepDelimiter)[0]]
 
-    def start(self, **kwargs):
+    def start(self, chat_id, u_type, update):
         pass
