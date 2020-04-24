@@ -1,4 +1,6 @@
 # telegraBASE - Make bots faster
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE?ref=badge_shield)
+
 > I will take your routine on me.
 
 ### What is this?
@@ -32,3 +34,6 @@ Public functions definition:
 
 
 PS Sry for bad docs within scripts, too lazy to comment everything. Will do ASAP.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE?ref=badge_large)
