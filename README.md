@@ -2,7 +2,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/ractyfree/telegrabase/badge)](https://www.codefactor.io/repository/github/ractyfree/telegrabase)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/590dd1735dbc4dd2a2158784c99964e2)](https://www.codacy.com/manual/ractyfree/telegraBASE?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ractyfree/telegraBASE&amp;utm_campaign=Badge_Grade)
 [![codebeat badge](https://codebeat.co/badges/b6899a83-7763-4155-b513-bd76995dd918)](https://codebeat.co/projects/github-com-ractyfree-telegrabase-master)
-
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fractyfree%2FtelegraBASE?ref=badge_shield)
 
 > I will take your routine on me.
